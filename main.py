@@ -22,13 +22,13 @@ def get_device():
 
 
 def get_layers():
-    layers = [LSTMLayer(hidden_size=128,
+    layers = [LSTMLayer(hidden_size=512,
                         num_layers=1,
                         bidirectional=True),
-              LSTMLayer(hidden_size=256,
+              LSTMLayer(hidden_size=512,
                         num_layers=1,
                         bidirectional=True),
-              LSTMLayer(hidden_size=256,
+              LSTMLayer(hidden_size=512,
                         num_layers=1,
                         bidirectional=True)
               ]
