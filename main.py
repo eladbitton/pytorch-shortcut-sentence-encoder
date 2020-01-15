@@ -28,7 +28,7 @@ def get_layers():
               LSTMLayer(hidden_size=1024,
                         num_layers=1,
                         bidirectional=True),
-              LSTMLayer(hidden_size=2048,
+              LSTMLayer(hidden_size=1028,
                         num_layers=1,
                         bidirectional=True)
               ]
