@@ -77,6 +77,9 @@ def train_and_eval():
                         train_log_file='train_1.txt', dev_log_file='dev_1.txt',
                         epochs=5, batch_size=32)
 
+    # Save the model
+    model_trainer.save_model('./models/model_1')
+
     # Test the model
     test_loader = torch.utils.data.DataLoader(test_data, batch_size=32,
                                               shuffle=False, num_workers=0)
