@@ -25,10 +25,10 @@ def get_layers():
     layers = [LSTMLayer(hidden_size=512,
                         num_layers=1,
                         bidirectional=True),
-              LSTMLayer(hidden_size=1024,
+              LSTMLayer(hidden_size=512,
                         num_layers=1,
                         bidirectional=True),
-              LSTMLayer(hidden_size=1028,
+              LSTMLayer(hidden_size=512,
                         num_layers=1,
                         bidirectional=True)
               ]
