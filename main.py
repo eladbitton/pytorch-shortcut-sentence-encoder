@@ -28,7 +28,7 @@ def get_layers():
               LSTMLayer(hidden_size=1024,
                         num_layers=1,
                         bidirectional=True),
-              LSTMLayer(hidden_size=2056,
+              LSTMLayer(hidden_size=1024,
                         num_layers=1,
                         bidirectional=True)
               ]
@@ -75,13 +75,13 @@ def train_and_eval():
     # Train the model
     model_trainer.train(train_data, dev_data,
                         train_log_file='train_1.txt', dev_log_file='dev_1.txt',
-                        epochs=5, batch_size=5)
+                        epochs=5, batch_size=100)
 
     # Save the model
     model_trainer.save_model('./models/model_1')
 
     # Test the model
-    test_loader = torch.utils.data.DataLoader(test_data, batch_size=5,
+    test_loader = torch.utils.data.DataLoader(test_data, batch_size=100,
                                               shuffle=False, num_workers=0)
 
     test_performencer = Performencer(name='Test',
