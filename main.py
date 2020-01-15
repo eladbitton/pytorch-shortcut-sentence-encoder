@@ -40,7 +40,7 @@ def train_and_eval():
     # Device
     device = get_device()
     # Embedding
-    embedding = GloveEmbedding("./models/glove/glove.840B.300d.txt", 300)
+    embedding = GloveEmbedding("./models/glove/glove.6B.300d.txt", 300)
 
     # Train and dev data
     train_file = './data/snli_1.0_train.jsonl'
