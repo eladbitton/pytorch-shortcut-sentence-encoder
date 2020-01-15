@@ -39,7 +39,8 @@ class GloveEmbedding:
                     splitLine = line.split()
                     word = splitLine[0]
                     embedding = [float(val) for val in splitLine[1:]]
-                    model[word] = embedding
+                    if len(embedding) == self.embed_dim:
+                        model[word] = embedding
                 except Exception:
                     pass
             print("Done.", len(model), " words loaded!")
