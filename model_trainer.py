@@ -103,8 +103,6 @@ class ModelTrainer:
             performencer.add_acc(outputs, label)
             performencer.add_loss(outputs, label)
 
-        performencer.pinpoint()
-
     def save_model(self, file_path):
         torch.save(self.net.state_dict(), file_path)
 
