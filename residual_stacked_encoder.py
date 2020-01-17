@@ -45,7 +45,7 @@ class ResidualStackedEncoder(nn.Module):
         self.pooling = nn.MaxPool1d(kernel_size=pool_kernel, stride=pool_kernel)
 
         # Output size
-        self.output_size = (layers_def[-1].output_size * max_sentence_length) // pool_kernel
+        self.output_size = (layers_def[-1].output_size * max_sentence_length)# // pool_kernel
 
     def forward(self, x, l, sort):
         x = self.embedding(x)
@@ -64,9 +64,9 @@ class ResidualStackedEncoder(nn.Module):
             else:
                 x = lstm_out
 
-        x = self.pooling(x)
+        # x = self.pooling(x)
 
-        x = x.view(len(x), -1)
+        x = x.contiguous().view(len(x), -1)
 
         pad = torch.zeros(len(x), self.output_size).to(self.device)
         pad[:, :x.shape[1]] = x

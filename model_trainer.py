@@ -6,21 +6,22 @@ from performencer import Performencer
 from tqdm import tqdm
 
 class ModelTrainer:
-    def __init__(self, net, device, optimizer):
+    def __init__(self, net, device, optimizer, print_every=50000):
         self.net = net
         self.net.to(device)
         self.device = device
         self.optimizer = optimizer
+        self.print_every = print_every
 
     def train(self, train_dataset, dev_dataset, train_log_file, dev_log_file, epochs=10, batch_size=500):
         print("Started Training")
         print("Train Examples: %d" % len(train_dataset))
         if dev_dataset:
             print("Dev Examples: %d" % len(dev_dataset))
-        #
-        # if self.print_every / batch_size != self.print_every // batch_size:
-        #     print("Please use a batch size which divides by %d" % self.print_every)
-        #     return
+
+        if self.print_every / batch_size != self.print_every // batch_size:
+            print("Please use a batch size which divides by %d" % self.print_every)
+            return
 
         # Create data loader
         trainloader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size,
@@ -34,6 +35,9 @@ class ModelTrainer:
         train_performencer = Performencer(name='Train',
                                           output_size=self.net.output_size)
         dev_performencer = Performencer(name='Dev',
+                                        output_size=self.net.output_size)
+
+        dev_every_performencer = Performencer(name='Dev Every 50000',
                                         output_size=self.net.output_size)
 
         # Unload batches to list of batches
@@ -71,6 +75,10 @@ class ModelTrainer:
                 optimizer.step()
 
                 num_examples += batch_size
+
+                if num_examples % self.print_every == 0:
+                    self.eval(devloader, dev_every_performencer)
+                    dev_every_performencer.pinpoint()
 
             # Save train accuracy and loss
             train_performencer.pinpoint()
