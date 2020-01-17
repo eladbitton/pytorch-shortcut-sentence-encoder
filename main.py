@@ -21,6 +21,18 @@ def get_device():
         return torch.device("cpu")
 
 
+
+def get_layers_small():
+    layers = [LSTMLayer(hidden_size=16,
+                        num_layers=1,
+                        bidirectional=True),
+              LSTMLayer(hidden_size=16,
+                        num_layers=1,
+                        bidirectional=True)
+              ]
+
+    return layers
+
 def get_layers():
     layers = [LSTMLayer(hidden_size=512,
                         num_layers=1,
@@ -75,18 +87,19 @@ def train_and_eval():
     # Train the model
     model_trainer.train(train_data, dev_data,
                         train_log_file='train_1.txt', dev_log_file='dev_1.txt',
-                        epochs=5, batch_size=250)
+                        epochs=50, batch_size=5)
 
     # Save the model
     model_trainer.save_model('./models/model_1')
 
     # Test the model
-    test_loader = torch.utils.data.DataLoader(test_data, batch_size=250,
+    test_loader = torch.utils.data.DataLoader(test_data, batch_size=50,
                                               shuffle=False, num_workers=0)
 
     test_performencer = Performencer(name='Test',
                                      output_size=model.output_size)
     model_trainer.eval(test_loader, test_performencer)
+    test_performencer.pinpoint()
     test_performencer.log_to_file('test_1.txt')
 
 
