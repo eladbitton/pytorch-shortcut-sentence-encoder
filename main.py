@@ -84,16 +84,18 @@ def train_and_eval():
                                  device=device,
                                  optimizer=optimizer)
 
+    batch_size = 50
+
     # Train the model
     model_trainer.train(train_data, dev_data,
                         train_log_file='train_1.txt', dev_log_file='dev_1.txt',
-                        epochs=5, batch_size=250)
+                        epochs=5, batch_size=batch_size)
 
     # Save the model
     model_trainer.save_model('./models/model_1')
 
     # Test the model
-    test_loader = torch.utils.data.DataLoader(test_data, batch_size=250,
+    test_loader = torch.utils.data.DataLoader(test_data, batch_size=batch_size,
                                               shuffle=False, num_workers=0)
 
     test_performencer = Performencer(name='Test',
