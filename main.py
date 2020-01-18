@@ -84,7 +84,7 @@ def train_and_eval():
                                  device=device,
                                  optimizer=optimizer)
 
-    batch_size = 250
+    batch_size = 100
     epochs = 5
 
     # Train the model
