@@ -2,6 +2,13 @@ import torch
 from torch import nn
 
 from residual_stacked_encoder import ResidualStackedEncoder
+from shortcut_stacked_encoder import ShortcutStackedEncoder
+from enum import Enum
+
+
+class LayersType(Enum):
+    Shortcut = 1
+    Residual = 2
 
 
 class ResidualLSTMEncoder(nn.Module):
@@ -10,21 +17,30 @@ class ResidualLSTMEncoder(nn.Module):
                  embedding_vectors,
                  padding_index,
                  layers_def,
-                 pool_kernel,
                  hidden_mlp,
                  output_size,
-                 device):
+                 device,
+                 layers_type):
         super(ResidualLSTMEncoder, self).__init__()
         self.output_size = output_size
         self.max_sentence_length = max_sentence_length
         self.device = device
 
-        self.stacked_encoder = ResidualStackedEncoder(embedding_vectors=embedding_vectors,
-                                                      padding_index=padding_index,
-                                                      layers_def=layers_def,
-                                                      pool_kernel=pool_kernel,
-                                                      max_sentence_length=max_sentence_length,
-                                                      device=device)
+        if layers_type == LayersType.Shortcut:
+            self.stacked_encoder = ShortcutStackedEncoder(embedding_vectors=embedding_vectors,
+                                                          padding_index=padding_index,
+                                                          layers_def=layers_def,
+                                                          max_sentence_length=max_sentence_length,
+                                                          device=device)
+        elif layers_type == LayersType.Residual:
+            self.stacked_encoder = ResidualStackedEncoder(embedding_vectors=embedding_vectors,
+                                                          padding_index=padding_index,
+                                                          layers_def=layers_def,
+                                                          max_sentence_length=max_sentence_length,
+                                                          device=device)
+        else:
+            raise Exception(
+                "Unknown layer type. Please use LayersType enum to specify which layers you would like to use.")
 
         self.dropout = nn.Dropout(0.1)
 
@@ -51,3 +67,13 @@ class ResidualLSTMEncoder(nn.Module):
         out = self.output_layer(out)
 
         return self.output_activation(out)
+
+
+class LSTMLayer:
+    def __init__(self, hidden_size, num_layers, bidirectional):
+        self.hidden_size = hidden_size
+        self.num_layers = num_layers
+        self.bidirectional = bidirectional
+        self.output_size = self.hidden_size
+        if bidirectional:
+            self.output_size *= 2

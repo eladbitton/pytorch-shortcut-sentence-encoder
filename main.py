@@ -8,8 +8,8 @@ from torch import optim
 
 from model_trainer import ModelTrainer
 from performencer import Performencer
-from residual_model import ResidualLSTMEncoder
-from residual_stacked_encoder import LSTMLayer
+from residual_model import ResidualLSTMEncoder, LayersType
+from residual_model import LSTMLayer
 from snli_data import Data
 from GloveEmbedding import GloveEmbedding
 
@@ -19,7 +19,6 @@ def get_device():
         return torch.device("cuda")
     else:
         return torch.device("cpu")
-
 
 
 def get_layers_small():
@@ -32,6 +31,7 @@ def get_layers_small():
               ]
 
     return layers
+
 
 def get_layers():
     layers = [LSTMLayer(hidden_size=512,
@@ -47,12 +47,51 @@ def get_layers():
 
     return layers
 
+def get_layers_resid_small():
+    layers = [LSTMLayer(hidden_size=10,
+                        num_layers=1,
+                        bidirectional=True),
+              LSTMLayer(hidden_size=10,
+                        num_layers=1,
+                        bidirectional=True),
+              LSTMLayer(hidden_size=10,
+                        num_layers=1,
+                        bidirectional=True)
+              ]
+
+    return layers
+
+
+def get_layers_resid():
+    layers = [LSTMLayer(hidden_size=600,
+                        num_layers=1,
+                        bidirectional=True),
+              LSTMLayer(hidden_size=600,
+                        num_layers=1,
+                        bidirectional=True),
+              LSTMLayer(hidden_size=600,
+                        num_layers=1,
+                        bidirectional=True)
+              ]
+
+    return layers
+
 
 def train_and_eval():
     # Device
     device = get_device()
     # Embedding
     embedding = GloveEmbedding("./models/glove/glove.6B.300d.txt", 300)
+    # embedding = GloveEmbedding("./models/glove/glove.6B.50d.txt", 50)
+
+    # Get the model stacked layers definition
+    # layers = get_layers()
+    layers = get_layers_resid()
+
+    # Training parameters
+    batch_size = 400
+    # batch_size = 5
+    epochs = 5
 
     # Train and dev data
     train_file = './data/snli_1.0_train.jsonl'
@@ -62,18 +101,15 @@ def train_and_eval():
     test_file = './data/snli_1.0_test.jsonl'
     test_data = Data(test_file, embedding)
 
-    # Get the model stacked layers definition
-    layers = get_layers()
-
     # Create the model
     model = ResidualLSTMEncoder(embedding_vectors=embedding.vectors,
                                 padding_index=embedding.PAD_WORD_INDEX,
                                 layers_def=layers,
-                                pool_kernel=2,
                                 output_size=len(train_data.c2i),
                                 max_sentence_length=Data.MAX_SENTENCE_SIZE,
-                                hidden_mlp=1600,
-                                device=device)
+                                hidden_mlp=800,
+                                device=device,
+                                layers_type=LayersType.Residual)
     model = model.to(device)
 
     # Create optimizer
@@ -84,16 +120,13 @@ def train_and_eval():
                                  device=device,
                                  optimizer=optimizer)
 
-    batch_size = 400
-    epochs = 5
-
     # Train the model
     model_trainer.train(train_data, dev_data,
-                        train_log_file='train_1.txt', dev_log_file='dev_1.txt',
+                        train_log_file='train_resid_1.txt', dev_log_file='dev_resid_1.txt',
                         epochs=epochs, batch_size=batch_size)
 
     # Save the model
-    model_trainer.save_model('./models/model_1')
+    model_trainer.save_model('./models/model_resid_1')
 
     # Test the model
     test_loader = torch.utils.data.DataLoader(test_data, batch_size=batch_size,
@@ -103,7 +136,7 @@ def train_and_eval():
                                      output_size=model.output_size)
     model_trainer.eval(test_loader, test_performencer)
     test_performencer.pinpoint()
-    test_performencer.log_to_file('test_1.txt')
+    test_performencer.log_to_file('test_resid_1.txt')
 
 
 if __name__ == "__main__":

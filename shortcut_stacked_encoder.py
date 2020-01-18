@@ -2,24 +2,14 @@ import torch
 from torch import nn
 
 
-class LSTMLayer:
-    def __init__(self, hidden_size, num_layers, bidirectional):
-        self.hidden_size = hidden_size
-        self.num_layers = num_layers
-        self.bidirectional = bidirectional
-        self.output_size = self.hidden_size
-        if bidirectional:
-            self.output_size *= 2
-
-
-class ResidualStackedEncoder(nn.Module):
+class ShortcutStackedEncoder(nn.Module):
     def __init__(self,
                  max_sentence_length,
                  embedding_vectors,
                  padding_index,
                  layers_def,
                  device):
-        super(ResidualStackedEncoder, self).__init__()
+        super(ShortcutStackedEncoder, self).__init__()
         self.padding_index = padding_index
         self.embedding_dim = len(embedding_vectors[0])
         self.device = device
@@ -28,22 +18,15 @@ class ResidualStackedEncoder(nn.Module):
 
         layers = []
         input_size = self.embedding_dim
-        layer = layers_def[0]
-        lstm = nn.LSTM(input_size,
-                       hidden_size=layer.hidden_size,
-                       batch_first=True,
-                       bidirectional=layer.bidirectional,
-                       num_layers=layer.num_layers)
-        layers.append(lstm)
-
-        input_size += layer.output_size
-        for layer in layers_def[1:]:
+        for layer in layers_def:
             lstm = nn.LSTM(input_size,
                            hidden_size=layer.hidden_size,
                            batch_first=True,
                            bidirectional=layer.bidirectional,
                            num_layers=layer.num_layers)
             layers.append(lstm)
+
+            input_size += layer.output_size
 
         self.lstm_layers = nn.Sequential(*layers)
 
@@ -64,23 +47,13 @@ class ResidualStackedEncoder(nn.Module):
         x, _ = torch.nn.utils.rnn.pad_packed_sequence(x,
                                                       batch_first=True,
                                                       padding_value=self.padding_index)
-        embeds = x
-        lstm_output_sum = None
+
         for i, layer in enumerate(self.lstm_layers):
             lstm_out, _ = self.forward_lstm_layer(layer, x, l, sort)
-            if i == 0:
-                # First
+            if i != len(self.lstm_layers) - 1:
                 x = torch.cat((lstm_out, x), dim=2)
-                lstm_output_sum = lstm_out
-            elif i == len(self.lstm_layers) - 1:
-                # Last
-                x = lstm_out
             else:
-                # Middle
-                # Sum lstm outputs
-                lstm_output_sum += lstm_out
-                # Concat sum with the original embeddings
-                x = torch.cat((lstm_output_sum, embeds), dim=2)
+                x = lstm_out
 
         # Pad
         pad = torch.zeros(len(x), self.max_sentence_length, self.last_layer_out).to(self.device)
