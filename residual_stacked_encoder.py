@@ -45,7 +45,9 @@ class ResidualStackedEncoder(nn.Module):
         self.pooling = nn.MaxPool1d(kernel_size=max_sentence_length, stride=max_sentence_length)
 
         # Output size
-        self.output_size = (layers_def[-1].output_size * max_sentence_length) // max_sentence_length
+        self.last_layer_out = layers_def[-1].output_size
+
+        self.output_size = (self.last_layer_out * max_sentence_length) // max_sentence_length
 
     def forward(self, x, l, sort):
         x = self.embedding(x)
@@ -64,14 +66,25 @@ class ResidualStackedEncoder(nn.Module):
             else:
                 x = lstm_out
 
+        # Pad
+        pad = torch.zeros(len(x), self.max_sentence_length, self.last_layer_out).to(self.device)
+        pad[:, :x.shape[1], :] = x
+        x = pad
+
+        # Pool
         x = self.pooling(x.permute(0, 2, 1)).permute(0, 2, 1)
 
+        # Flatten
         x = x.contiguous().view(len(x), -1)
 
-        pad = torch.zeros(len(x), self.output_size).to(self.device)
-        pad[:, :x.shape[1]] = x
+        # x = self.pooling(x.permute(0, 2, 1)).permute(0, 2, 1)
+        #
+        # x = x.contiguous().view(len(x), -1)
+        #
+        # pad = torch.zeros(len(x), self.output_size).to(self.device)
+        # pad[:, :x.shape[1]] = x
 
-        return pad
+        return x
 
     def forward_lstm_layer(self, layer, x, l, sort):
         lstm_in = torch.nn.utils.rnn.pack_padded_sequence(x, l,
