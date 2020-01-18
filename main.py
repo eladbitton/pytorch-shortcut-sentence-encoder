@@ -85,11 +85,12 @@ def train_and_eval():
                                  optimizer=optimizer)
 
     batch_size = 50
+    epochs = 5
 
     # Train the model
     model_trainer.train(train_data, dev_data,
                         train_log_file='train_1.txt', dev_log_file='dev_1.txt',
-                        epochs=5, batch_size=batch_size)
+                        epochs=epochs, batch_size=batch_size)
 
     # Save the model
     model_trainer.save_model('./models/model_1')

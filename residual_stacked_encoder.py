@@ -42,10 +42,10 @@ class ResidualStackedEncoder(nn.Module):
         self.lstm_layers = nn.Sequential(*layers)
 
         # Row max pooling
-        self.pooling = nn.MaxPool1d(kernel_size=pool_kernel, stride=pool_kernel)
+        self.pooling = nn.MaxPool1d(kernel_size=max_sentence_length, stride=max_sentence_length)
 
         # Output size
-        self.output_size = (layers_def[-1].output_size * max_sentence_length)# // pool_kernel
+        self.output_size = (layers_def[-1].output_size * max_sentence_length) // max_sentence_length
 
     def forward(self, x, l, sort):
         x = self.embedding(x)
@@ -64,7 +64,7 @@ class ResidualStackedEncoder(nn.Module):
             else:
                 x = lstm_out
 
-        # x = self.pooling(x)
+        x = self.pooling(x.permute(0, 2, 1)).permute(0, 2, 1)
 
         x = x.contiguous().view(len(x), -1)
 
