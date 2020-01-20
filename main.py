@@ -48,13 +48,13 @@ def get_layers():
     return layers
 
 def get_layers_resid_small():
-    layers = [LSTMLayer(hidden_size=10,
+    layers = [LSTMLayer(hidden_size=30,
                         num_layers=1,
                         bidirectional=True),
-              LSTMLayer(hidden_size=10,
+              LSTMLayer(hidden_size=30,
                         num_layers=1,
                         bidirectional=True),
-              LSTMLayer(hidden_size=10,
+              LSTMLayer(hidden_size=30,
                         num_layers=1,
                         bidirectional=True)
               ]
@@ -77,20 +77,11 @@ def get_layers_resid():
     return layers
 
 
-def train_and_eval():
+def train_and_eval(embedding, layers, batch_size):
     # Device
     device = get_device()
-    # Embedding
-    embedding = GloveEmbedding("./models/glove/glove.6B.300d.txt", 300)
-    # embedding = GloveEmbedding("./models/glove/glove.6B.50d.txt", 50)
-
-    # Get the model stacked layers definition
-    # layers = get_layers()
-    layers = get_layers_resid()
 
     # Training parameters
-    batch_size = 400
-    # batch_size = 5
     epochs = 5
 
     # Train and dev data
@@ -139,5 +130,25 @@ def train_and_eval():
     test_performencer.log_to_file('test_resid_1.txt')
 
 
+def main():
+    import sys
+    if len(sys.argv) == 2:
+        low_mem = sys.argv[1] == '--low_mem'
+    else:
+        low_mem = False
+
+    if low_mem:
+        # Embedding
+        embedding = GloveEmbedding("./models/glove/glove.6B.50d.txt", 50)
+        layers = get_layers_resid_small()
+        batch_size = 5
+    else:
+        embedding = GloveEmbedding("./models/glove/glove.6B.300d.txt", 300)
+        layers = get_layers_resid()
+        batch_size = 400
+
+    train_and_eval(embedding, layers, batch_size)
+
+
 if __name__ == "__main__":
-    train_and_eval()
+    main()

@@ -50,6 +50,7 @@ class Data(Dataset):
             category_index = self.c2i.get(category)
             if category_index is None:
                 # Invalid category
+                print("Invalid category: %s" % category)
                 continue
             self.Y.append(category_index)
 

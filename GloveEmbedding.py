@@ -13,7 +13,7 @@ class GloveEmbedding:
             GloveEmbedding.PAD_WORD: GloveEmbedding.PAD_WORD_INDEX,
             GloveEmbedding.WORD_NOT_FOUND: GloveEmbedding.WORD_NOT_FOUND_INDEX
         }
-        self.vectors = [[0] * embedding_dim]
+        self.vectors = [[0] * embedding_dim, [0] * embedding_dim]
 
         self.load_file(file_path)
 
