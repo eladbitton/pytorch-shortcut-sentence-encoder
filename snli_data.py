@@ -81,12 +81,15 @@ class Data(Dataset):
 
     def encode_sentence(self, sentence):
         emb = [self.embedding[word] for word in sentence]
-        length = len(emb)
+
         if len(emb) > Data.MAX_SENTENCE_SIZE:
             emb = emb[:Data.MAX_SENTENCE_SIZE]
             length = Data.MAX_SENTENCE_SIZE
         elif len(emb) < Data.MAX_SENTENCE_SIZE:
+            length = len(emb)
             emb = emb + [self.padding_index] * (Data.MAX_SENTENCE_SIZE - len(emb))
+        else:
+            length = len(emb)
 
         return emb, length
 
