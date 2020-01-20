@@ -6,7 +6,7 @@ from performencer import Performencer
 from tqdm import tqdm
 
 class ModelTrainer:
-    def __init__(self, net, device, optimizer, print_every=1000):
+    def __init__(self, net, device, optimizer, print_every=100000):
         self.net = net
         self.net.to(device)
         self.device = device
@@ -37,7 +37,7 @@ class ModelTrainer:
         dev_performencer = Performencer(name='Dev',
                                         output_size=self.net.output_size)
 
-        dev_every_performencer = Performencer(name='Dev Every 50000',
+        dev_every_performencer = Performencer(name='Dev Every %d' % self.print_every,
                                         output_size=self.net.output_size)
 
         # Unload batches to list of batches
