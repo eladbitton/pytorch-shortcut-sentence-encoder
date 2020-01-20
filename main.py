@@ -147,7 +147,7 @@ def main():
         print("Running train with high memory preset")
         embedding = GloveEmbedding("./models/glove/glove.6B.300d.txt", 300)
         layers = get_layers_resid()
-        batch_size = 400
+        batch_size = 200
 
     train_and_eval(embedding, layers, batch_size)
 
