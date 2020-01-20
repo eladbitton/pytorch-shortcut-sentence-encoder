@@ -49,7 +49,7 @@ class ResidualLSTMEncoder(nn.Module):
 
         self.output_layer = nn.Linear(hidden_mlp, output_size)
 
-        self.output_activation = nn.Softmax(dim=1)
+        self.output_activation = nn.LogSoftmax(dim=1)
 
     def forward(self, x_1, l_1, x_2, l_2):
         x_1_encode = self.stacked_encoder(x_1, l_1, sort=True)
