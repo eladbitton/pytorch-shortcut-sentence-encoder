@@ -16,7 +16,6 @@ class Performencer:
         self.accuracies = []
         self.losses = []
 
-
         self.output_size = output_size
         self.criterion = nn.CrossEntropyLoss()
 
@@ -64,6 +63,15 @@ class Performencer:
 
         return total, correct
 
+    def log_to_file(self, file_name):
+        json_acc = json.dumps(self.accuracies)
+        json_loss = json.dumps(self.losses)
+
+        with open("./accuracies/%s" % file_name, "w+") as file:
+            file.write(json_acc)
+            file.write('\n')
+            file.write(json_loss)
+
     # def categorical_accuracy(self, outputs, label):
     #     outputs = outputs.cpu()
     #     label = label.cpu()
@@ -89,12 +97,6 @@ class Performencer:
     #     total = torch.FloatTensor([label[non_pad_elements].shape[0]]).item() - filter_count
     #
     #     return total, count
-
-    def log_to_file(self, file_name):
-        json_acc = json.dumps(self.accuracies)
-
-        with open("./accuracies/%s" % file_name, "w+") as file:
-            file.write(json_acc)
 
     #
     # def categorical_accuracy(self, preds, y):
