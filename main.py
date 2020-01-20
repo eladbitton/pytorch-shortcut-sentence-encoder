@@ -63,13 +63,13 @@ def get_layers_resid_small():
 
 
 def get_layers_resid():
-    layers = [LSTMLayer(hidden_size=600,
+    layers = [LSTMLayer(hidden_size=300,
                         num_layers=1,
                         bidirectional=True),
-              LSTMLayer(hidden_size=600,
+              LSTMLayer(hidden_size=300,
                         num_layers=1,
                         bidirectional=True),
-              LSTMLayer(hidden_size=600,
+              LSTMLayer(hidden_size=300,
                         num_layers=1,
                         bidirectional=True)
               ]
@@ -104,7 +104,8 @@ def train_and_eval(embedding, layers, batch_size):
     model = model.to(device)
 
     # Create optimizer
-    optimizer = optim.Adam(model.parameters())
+    optimizer = optim.Adam(model.parameters(), lr=2e-4)
+    # optimizer = optim.Adagrad(model.parameters())
 
     # Create a model trainer object
     model_trainer = ModelTrainer(net=model,
@@ -146,7 +147,7 @@ def main():
         print("Running train with high memory preset")
         embedding = GloveEmbedding("./models/glove/glove.6B.300d.txt", 300)
         layers = get_layers_resid()
-        batch_size = 100
+        batch_size = 400
 
     train_and_eval(embedding, layers, batch_size)
 

@@ -4,7 +4,7 @@ from torch.utils.data import Dataset
 
 
 class Data(Dataset):
-    MAX_SENTENCE_SIZE = 150
+    MAX_SENTENCE_SIZE = 80
 
     def __init__(self, file_path, embedding):
         self.embedding = embedding
