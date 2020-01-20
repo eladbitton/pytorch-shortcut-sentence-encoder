@@ -79,15 +79,18 @@ class ModelTrainer:
                 if num_examples % self.print_every == 0:
                     self.eval(devloader, dev_every_performencer)
                     dev_every_performencer.pinpoint()
+                    dev_every_performencer.log_to_file('dev_every_1.txt')
 
             # Save train accuracy and loss
             train_performencer.pinpoint()
+            train_performencer.log_to_file(train_log_file)
 
             # Evaluate model on the dev set
             self.eval(devloader, dev_performencer)
 
             # Save dev accuracy and loss
             dev_performencer.pinpoint()
+            dev_performencer.log_to_file(dev_log_file)
 
         train_performencer.log_to_file(train_log_file)
         dev_performencer.log_to_file(dev_log_file)
