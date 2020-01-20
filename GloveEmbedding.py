@@ -30,7 +30,8 @@ class GloveEmbedding:
             if word not in self.w2i:
                 self.w2i[word] = len(self.w2i)
 
-        self.vectors.append([0.0] * self.embed_dim)
+        self.vectors.append([0.0] * self.embed_dim) # padding
+        self.vectors.append([0.0] * self.embed_dim) # word not found
 
         self.vectors = torch.tensor(self.vectors, dtype=torch.float)
 

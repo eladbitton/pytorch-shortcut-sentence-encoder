@@ -6,9 +6,9 @@ from torch.utils.data import Dataset
 class Data(Dataset):
     MAX_SENTENCE_SIZE = 150
 
-    def __init__(self, file_path, embedding, padding_index=-1):
-        self.padding_index = padding_index
+    def __init__(self, file_path, embedding):
         self.embedding = embedding
+        self.padding_index = len(embedding.w2i) - 1
         # First sentences and lengths
         self.X_1 = []
         self.L_1 = []
