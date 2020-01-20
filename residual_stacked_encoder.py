@@ -23,7 +23,7 @@ class ResidualStackedEncoder(nn.Module):
         self.padding_index = padding_index
         self.embedding_dim = len(embedding_vectors[0])
         self.device = device
-        self.embedding = nn.Embedding.from_pretrained(embedding_vectors, freeze=False)
+        self.embedding = nn.Embedding.from_pretrained(embedding_vectors, freeze=False, padding_idx=padding_index)
         self.max_sentence_length = max_sentence_length
 
         layers = []

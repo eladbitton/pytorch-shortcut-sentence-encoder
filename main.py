@@ -94,7 +94,7 @@ def train_and_eval(embedding, layers, batch_size):
 
     # Create the model
     model = ResidualLSTMEncoder(embedding_vectors=embedding.vectors,
-                                padding_index=embedding.PAD_WORD_INDEX,
+                                padding_index=data.padding_index,
                                 layers_def=layers,
                                 output_size=len(train_data.c2i),
                                 max_sentence_length=Data.MAX_SENTENCE_SIZE,
