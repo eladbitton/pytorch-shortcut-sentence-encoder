@@ -4,9 +4,9 @@ from torch.utils.data import Dataset
 
 
 class Data(Dataset):
-    MAX_SENTENCE_SIZE = 60
+    MAX_SENTENCE_SIZE = 150
 
-    def __init__(self, file_path, embedding, padding_index=0):
+    def __init__(self, file_path, embedding, padding_index=-1):
         self.padding_index = padding_index
         self.embedding = embedding
         # First sentences and lengths
@@ -50,7 +50,6 @@ class Data(Dataset):
             category_index = self.c2i.get(category)
             if category_index is None:
                 # Invalid category
-                print("Invalid category: %s" % category)
                 continue
             self.Y.append(category_index)
 

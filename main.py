@@ -138,16 +138,15 @@ def main():
         low_mem = False
 
     if low_mem:
-        # Embedding
+        print("Running train with low memory preset")
         embedding = GloveEmbedding("./models/glove/glove.6B.50d.txt", 50)
         layers = get_layers_resid_small()
         batch_size = 5
-        print("Running train with low memory preset")
     else:
+        print("Running train with high memory preset")
         embedding = GloveEmbedding("./models/glove/glove.6B.300d.txt", 300)
         layers = get_layers_resid()
         batch_size = 400
-        print("Running train with high memory preset")
 
     train_and_eval(embedding, layers, batch_size)
 
