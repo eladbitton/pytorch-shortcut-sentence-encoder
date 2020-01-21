@@ -8,7 +8,7 @@ class Data(Dataset):
 
     def __init__(self, file_path, embedding):
         self.embedding = embedding
-        self.padding_index = len(embedding.w2i) - 1
+        self.padding_index = 0
         # First sentences and lengths
         self.X_1 = []
         self.L_1 = []
