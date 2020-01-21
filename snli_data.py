@@ -1,10 +1,12 @@
 import json
+import string
+
 import torch
 from torch.utils.data import Dataset
 
 
 class Data(Dataset):
-    MAX_SENTENCE_SIZE = 80
+    MAX_SENTENCE_SIZE = 40
 
     def __init__(self, file_path, embedding):
         self.embedding = embedding
@@ -42,8 +44,8 @@ class Data(Dataset):
             except Exception:
                 continue
 
-            sentence_1 = json_obj["sentence1"].lower()
-            sentence_2 = json_obj["sentence2"].lower()
+            sentence_1 = self.preprocess(json_obj["sentence1"])
+            sentence_2 = self.preprocess(json_obj["sentence2"])
 
             # Get category
             category = json_obj["gold_label"]
@@ -111,3 +113,9 @@ class Data(Dataset):
 
     def __len__(self):
         return len(self.X_1)
+
+    PUNC_TABLE = str.maketrans('', '', string.punctuation)
+
+    def preprocess(self, sentence):
+        sentence = sentence.lower()
+        return sentence.translate(Data.PUNC_TABLE).split()

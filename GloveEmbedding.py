@@ -21,6 +21,8 @@ class GloveEmbedding:
 
         self.load_file(file_path)
 
+        assert len(self.w2i) == len(self.vectors)
+
     def load_file(self, file_path):
         model_dict = self.load_glove_model(file_path)
 

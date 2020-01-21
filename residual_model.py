@@ -66,8 +66,8 @@ class ResidualLSTMEncoder(nn.Module):
         out = self.dropout(out)
         out = self.output_layer(out)
 
-        return out
-        # return self.output_activation(out)
+        # return out
+        return self.output_activation(out)
 
 
 class LSTMLayer:

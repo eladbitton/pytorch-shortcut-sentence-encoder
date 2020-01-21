@@ -63,13 +63,13 @@ def get_layers_resid_small():
 
 
 def get_layers_resid():
-    layers = [LSTMLayer(hidden_size=300,
+    layers = [LSTMLayer(hidden_size=600,
                         num_layers=1,
                         bidirectional=True),
-              LSTMLayer(hidden_size=300,
+              LSTMLayer(hidden_size=600,
                         num_layers=1,
                         bidirectional=True),
-              LSTMLayer(hidden_size=300,
+              LSTMLayer(hidden_size=600,
                         num_layers=1,
                         bidirectional=True)
               ]
