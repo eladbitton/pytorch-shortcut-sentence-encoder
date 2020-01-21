@@ -6,7 +6,7 @@ from performencer import Performencer
 from tqdm import tqdm
 
 class ModelTrainer:
-    def __init__(self, net, device, optimizer, print_every=50000):
+    def __init__(self, net, device, optimizer, print_every=100000):
         self.net = net
         self.net.to(device)
         self.device = device
