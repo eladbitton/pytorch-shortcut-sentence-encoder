@@ -34,13 +34,13 @@ def get_layers_shortcut_small():
 
 
 def get_layers_shortcut():
-    layers = [LSTMLayer(hidden_size=512,
+    layers = [LSTMLayer(hidden_size=600,
                         num_layers=1,
                         bidirectional=True),
-              LSTMLayer(hidden_size=1024,
+              LSTMLayer(hidden_size=600,
                         num_layers=1,
                         bidirectional=True),
-              LSTMLayer(hidden_size=2048,
+              LSTMLayer(hidden_size=600,
                         num_layers=1,
                         bidirectional=True)
               ]
@@ -102,6 +102,10 @@ def train_and_eval(embedding, layers, batch_size, layers_type):
                                 hidden_mlp=800,
                                 device=device,
                                 layers_type=layers_type)
+
+    num_of_params = sum(p.numel() for p in model.parameters())
+
+    print("Number of model parameters: %d" % num_of_params)
     model = model.to(device)
 
     # Create optimizer
